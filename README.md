@@ -3,7 +3,7 @@
 Project base on [astc-encoder](https://github.com/ARM-software/astc-encoder). If you use ASTC2RGBA-Unity, please make sure you include the same license in your project, as it is required by the original project.
 
 ## Note
-You should only consider use this project if you must decode ASTC bytes at runtime (because Unity doesn't expose ASTC decoding at runtime). If you can do this at build time (a.k.a. You have .astc images), I do rather recommend you to load the images in Unity and let it automatically do it for you. 
+You should only consider use this project if you must decode ASTC bytes at runtime (because Unity doesn't expose ASTC decoding at runtime). If you can do this at build time (a.k.a. You have .astc images), I do rather recommend you to load the images in Unity and let it automatically do that for you. 
 
 ## How to use
 1. Put [astc_decoder.dll](/Libs/astc_decoder.dll) in ./Assets/Plugins in Unity project.
@@ -11,6 +11,7 @@ You should only consider use this project if you must decode ASTC bytes at runti
 2. Use `TextureFormatCheck.IsAstcFormat` to confirm your image format is ASTC. 
 
 ``` C#
+int format = ...;
 if (TextureFormatChecker.IsAstcFormat((TextureFormat)format))
 {
     ...
@@ -19,6 +20,9 @@ if (TextureFormatChecker.IsAstcFormat((TextureFormat)format))
 
 3. Convert the bytes to RGBA format, for example:
 ``` C#
+int width = ...;
+int height = ...;
+byte[] imageBytes = ...;
 byte[] rgbaBytes = new byte[width * height * 4];
 try
 {
