@@ -5,7 +5,7 @@ extern "C" {
 
     // Placeholder for now
     __declspec(dllexport)
-    bool DecodeASTC(const uint8_t* astcData, int dataLength, int width, int height, uint8_t* outRgba)
+    bool DecodeASTC(const uint8_t* astcData, int dataLength, int width, int height, uint8_t* outRgba, int blockX, int blockY)
     {
         // 1. Validate input sizes (width, height, dataLength)
         // 2. Calculate blocks count from width, height, and block size (usually 4x4)
@@ -20,7 +20,7 @@ extern "C" {
 
         // Initialize config for LDR profile, block size matching input dimensions (e.g., 4x4 blocks, or 12x12 here)
         // For now let's assume 4x4 blocks for simplicity:
-        status = astcenc_config_init(ASTCENC_PRF_LDR, 4, 4, 1, ASTCENC_PRE_MEDIUM, 0, &config);
+        status = astcenc_config_init(ASTCENC_PRF_LDR, blockX, blockY, 1, ASTCENC_PRE_MEDIUM, 0, &config);
         if (status != ASTCENC_SUCCESS) return false;
 
         // Allocate context

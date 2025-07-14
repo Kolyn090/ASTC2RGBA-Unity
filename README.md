@@ -8,11 +8,11 @@ You should only consider use this project if you must decode ASTC bytes at runti
 ## How to use
 1. Put [astc_decoder.dll](/Libs/astc_decoder.dll) in ./Assets/Plugins in Unity project.
 
-2. Use `TextureFormatCheck.IsAstcFormat` to confirm your image format is ASTC. 
+2. Use `AstcHelper.IsAstcFormat` to confirm your image format is ASTC. 
 
 ``` C#
 int format = ...;
-if (TextureFormatChecker.IsAstcFormat((TextureFormat)format))
+if (AstcHelper.IsAstcFormat((TextureFormat)format))
 {
     ...
 }
@@ -24,17 +24,24 @@ int width = ...;
 int height = ...;
 byte[] imageBytes = ...;
 byte[] rgbaBytes = new byte[width * height * 4];
+
+(int blockX, int blockY) = GetBlock((TextureFormat)format);
+if (blockX == -1)
+{
+    Debug.LogError($"Unsupported ASTC format: {(TextureFormat)format}");
+    return null;
+}
 try
 {
-    bool result = AstcDecoderNative.DecodeASTC(imageBytes, imageBytes.Length, width, height, rgbaBytes);
-    if (result)
+    bool decodeStatus = AstcHelper.DecodeASTC(imageBytes, imageBytes.Length, width, height, rgbaBytes, blockX, blockY);
+    if (decodeStatus)
     {
         // Success
         return rgbaBytes;
     }
     else
     {
-        Debug.LogError("ASTC decode failed with error code " + result);
+        Debug.LogError("ASTC decode failed with error code " + decodeStatus);
         return null;
     }
 }
@@ -56,6 +63,8 @@ texture.Apply();
 The following is an example:
 
 ![image_example](/Image/example.png)
+
+If you have trouble getting the DLL work, you can choose [build your own](./Memo/README.md).
 
 ---
 🥂 Happy Coding.
